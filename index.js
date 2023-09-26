@@ -39,6 +39,28 @@ server.get('/products', function (req, res, next) {
   })
 })
 
+// Get a single product by their user id
+server.get('/products/:id', function (req, res, next) {
+  console.log('GET /products/:id params=>' + JSON.stringify(req.params));
+  getTotaCount++;
+  console.log('GET:' + getTotaCount);
+
+  // Find a single user by their id within save
+  usersProduct.findOne({ _id: req.params.id }, function (error, product) {
+
+    // If there are any errors, pass them to next in the correct format
+    if (error) return next(new Error(JSON.stringify(error.errors)))
+
+    if (product) {
+      // Send the user if no issues
+      res.send(product)
+    } else {
+      // Send 404 header if the user doesn't exist
+      res.send(404)
+    }
+  })
+})
+
   // Create a new Products
 server.post('/products', function (req, res, next) {
   console.log('POST /products params=>' + JSON.stringify(req.params));
