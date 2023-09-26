@@ -14,7 +14,7 @@ let restify = require('restify')
   // Create the restify server
   , server = restify.createServer({ name: SERVER_NAME})
 
-  //Middleware to log requests and responses
+  //Middleware to log requests
   server.use((req, res, next) => {
     console.log(`${req.method} ${req.url}: received request`);
     next();
