@@ -84,7 +84,7 @@ server.post('/products', function (req, res, next) {
   // validation of manadatory fields
   if (req.body.productID === undefined ) {
     // If there are any errors, pass them to next in the correct format
-    return next(new errors.BadRequestError('name must be supplied'))
+    return next(new errors.BadRequestError('product ID must be supplied'))
   }
   if (req.body.name === undefined ) {
     // If there are any errors, pass them to next in the correct format
