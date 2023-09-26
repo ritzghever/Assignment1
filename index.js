@@ -2,14 +2,14 @@ let SERVER_NAME = 'products-api'
 let PORT = 3000;
 let HOST = '127.0.0.1';
 
-let postTotaCount = 0;
-let getTotaCount = 0;
+let postTotalCount = 0;
+let getTotalCount = 0;
 
 let errors = require('restify-errors');
 let restify = require('restify')
 
   // Get a persistence engine for the products
-  , usersProduct = require('save')('products')
+  , productsSave = require('save')('products')
 
   // Create the restify server
   , server = restify.createServer({ name: SERVER_NAME})
@@ -28,28 +28,30 @@ server.use(restify.plugins.bodyParser());
 // Get all products in the system
 server.get('/products', function (req, res, next) {
   console.log('GET /products params=>' + JSON.stringify(req.params));
-  getTotaCount++;
-  console.log('GET:' + getTotaCount);
+  getTotalCount++;
+  console.log('GET:' + getTotalCount, 'POST: ' + postTotalCount)
 
   // Find every entity within the given collection
-  usersProduct.find({}, function (error, products) {
+  productsSave.find({}, function (error, products) {
 
     // Return all of the products in the system
     res.send(products)
   })
 })
 
-// Get a single product by their user id
+// Get a single product by their product id
 server.get('/products/:id', function (req, res, next) {
   console.log('GET /products/:id params=>' + JSON.stringify(req.params));
-  getTotaCount++;
-  console.log('GET:' + getTotaCount);
+  getTotalCount++;
+  console.log('GET:' + getTotalCount, 'POST: ' + postTotalCount)
 
-  // Find a single user by their id within save
-  usersProduct.findOne({ _id: req.params.id }, function (error, product) {
+  // Find a single product by their id within save
+  productsSave.findOne({ _id: req.params.id }, function (error, product) {
 
     // If there are any errors, pass them to next in the correct format
-    if (error) return next(new Error(JSON.stringify(error.errors)))
+    if (error) {
+      return next(new Error(JSON.stringify(error.errors)))
+    }
 
     if (product) {
       // Send the user if no issues
@@ -65,8 +67,8 @@ server.get('/products/:id', function (req, res, next) {
 server.post('/products', function (req, res, next) {
   console.log('POST /products params=>' + JSON.stringify(req.params));
   console.log('POST /products body=>' + JSON.stringify(req.body));
-  postTotaCount++;
-  console.log('POST:' + postTotaCount);
+  postTotalCount++;
+  console.log('GET:' + getTotalCount, 'POST: ' + postTotalCount)
 
   // validation of manadatory fields
   if (req.body.productID === undefined ) {
@@ -94,12 +96,28 @@ server.post('/products', function (req, res, next) {
 	}
 
   // Create the product using the persistence engine
-  usersProduct.create( newProduct, function (error, product) {
+  productsSave.create( newProduct, function (error, product) {
 
     // If there are any errors, pass them to next in the correct format
-    if (error) return next(new Error(JSON.stringify(error.errors)))
-
+    if (error) {
+      return next(new Error(JSON.stringify(error.errors)))
+    }
     // Send the product if no issues
     res.send(201, product)
-  })
+  })  
 })
+
+// Delete all products
+server.del('/products', function (req, res, next) {
+  console.log('DELETE /products params=>' + JSON.stringify(req.params));
+
+  // Delete all products from the persistence engine
+  productsSave.deleteMany({}, function (error) {
+    // If there are any errors, pass them to next in the correct format
+    if (error) {
+      return next(new Error(JSON.stringify(error.errors)));
+    }
+    // Send a success response indicating the number of products deleted
+    res.send(204)
+  });
+});
