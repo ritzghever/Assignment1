@@ -17,9 +17,6 @@ let restify = require('restify')
   //Middleware to log requests and responses
   server.use((req, res, next) => {
     console.log(`${req.method} ${req.url}: received request`);
-    // res.on('finish', () => {
-    //   console.log(`${req.method} ${req.url}: sending response`);
-    // });
     next();
   });
 
