@@ -64,11 +64,11 @@ server.get('/products/:id', function (req, res, next) {
     console.log(`${req.method} ${req.url}: sending response`);
 
     if (product) {
-      // Send the user if no issues
+      // Send the product if no issues
       res.send(product)
       console.log('GET /products/:id: retrieved a product')
     } else {
-      // Send 404 header if the user doesn't exist
+      // Send 404 header if the product doesn't exist
       res.send(404)
     }
   })
