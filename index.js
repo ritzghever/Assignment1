@@ -14,6 +14,15 @@ let restify = require('restify')
   // Create the restify server
   , server = restify.createServer({ name: SERVER_NAME})
 
+  //Middleware to log requests and responses
+  server.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}: received request`);
+    // res.on('finish', () => {
+    //   console.log(`${req.method} ${req.url}: sending response`);
+    // });
+    next();
+  });
+
   server.listen(PORT, HOST, function () {
   console.log('Server %s listening at %s', server.name, server.url)
   console.log('**** Resources: ****')
@@ -36,6 +45,8 @@ server.get('/products', function (req, res, next) {
 
     // Return all of the products in the system
     res.send(products)
+    console.log(`${req.method} ${req.url}: sending response`);
+    console.log('GET /products: retrieved all products')
   })
 })
 
@@ -53,9 +64,12 @@ server.get('/products/:id', function (req, res, next) {
       return next(new Error(JSON.stringify(error.errors)))
     }
 
+    console.log(`${req.method} ${req.url}: sending response`);
+
     if (product) {
       // Send the user if no issues
       res.send(product)
+      console.log('GET /products/:id: retrieved a product')
     } else {
       // Send 404 header if the user doesn't exist
       res.send(404)
@@ -98,12 +112,15 @@ server.post('/products', function (req, res, next) {
   // Create the product using the persistence engine
   productsSave.create( newProduct, function (error, product) {
 
+    console.log(`${req.method} ${req.url}: sending response`);
+
     // If there are any errors, pass them to next in the correct format
     if (error) {
       return next(new Error(JSON.stringify(error.errors)))
     }
     // Send the product if no issues
     res.send(201, product)
+    console.log('POST /products: product created successfully')
   })  
 })
 
@@ -113,11 +130,15 @@ server.del('/products', function (req, res, next) {
 
   // Delete all products from the persistence engine
   productsSave.deleteMany({}, function (error) {
+
+    console.log(`${req.method} ${req.url}: sending response`);
+    
     // If there are any errors, pass them to next in the correct format
     if (error) {
       return next(new Error(JSON.stringify(error.errors)));
     }
     // Send a success response indicating the number of products deleted
     res.send(204)
+    console.log('DELETE /products: deleted all products')
   });
 });
