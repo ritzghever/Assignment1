@@ -47,33 +47,6 @@ server.get('/products', function (req, res, next) {
   })
 })
 
-// Get a single product by their product id
-server.get('/products/:id', function (req, res, next) {
-  console.log('GET /products/:id params=>' + JSON.stringify(req.params));
-  getTotalCount++;
-  console.log('GET:' + getTotalCount, 'POST: ' + postTotalCount)
-
-  // Find a single product by their id within save
-  productsSave.findOne({ _id: req.params.id }, function (error, product) {
-
-    // If there are any errors, pass them to next in the correct format
-    if (error) {
-      return next(new Error(JSON.stringify(error.errors)))
-    }
-
-    console.log(`${req.method} ${req.url}: sending response`);
-
-    if (product) {
-      // Send the product if no issues
-      res.send(product)
-      console.log('GET /products/:id: retrieved a product')
-    } else {
-      // Send 404 header if the product doesn't exist
-      res.send(404)
-    }
-  })
-})
-
   // Create a new Products
 server.post('/products', function (req, res, next) {
   console.log('POST /products params=>' + JSON.stringify(req.params));
