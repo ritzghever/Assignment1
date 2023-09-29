@@ -40,7 +40,7 @@ server.get('/products', function (req, res, next) {
   // Find every entity within the given collection
   productsSave.find({}, function (error, products) {
 
-    // Return all of the products in the systemc
+    // Return all of the products in the system
     res.send(products)
     console.log(`${req.method} ${req.url}: sending response`);
     console.log('GET /products: retrieved all products')
