@@ -1,5 +1,5 @@
 let SERVER_NAME = 'products-api'
-let PORT = 3000;
+let PORT = 5000;
 let HOST = '127.0.0.1';
 
 let postTotalCount = 0;
@@ -40,7 +40,7 @@ server.get('/products', function (req, res, next) {
   // Find every entity within the given collection
   productsSave.find({}, function (error, products) {
 
-    // Return all of the products in the system
+    // Return all of the products in the systemc
     res.send(products)
     console.log(`${req.method} ${req.url}: sending response`);
     console.log('GET /products: retrieved all products')
